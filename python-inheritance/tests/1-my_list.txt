@@ -1,32 +1,96 @@
 The ``1-my_list`` module
 =========================
 
-Using ``MyList``
------------------
-
-Import MyList:
+Check instantiation
+--------------------
 
     >>> MyList = __import__('1-my_list').MyList
-
-Create a MyList and append some integers:
-
     >>> my_list = MyList()
+
+Check inherits from list
+--------------------------
+
+    >>> isinstance(my_list, list)
+    True
+
+Check `__str__`
+-----------------
+
+MyList does not override printing, so it prints exactly like a
+regular list:
+
     >>> my_list.append(1)
     >>> my_list.append(4)
     >>> my_list.append(2)
-    >>> my_list.append(3)
-    >>> my_list.append(5)
-    >>> print(my_list)
-    [1, 4, 2, 3, 5]
+    >>> str(my_list)
+    '[1, 4, 2]'
 
-Print it sorted, without changing the original order:
+Check `append()`
+------------------
 
-    >>> my_list.print_sorted()
+`append()` is inherited unchanged from list:
+
+    >>> my_list2 = MyList()
+    >>> my_list2.append(10)
+    >>> my_list2
+    [10]
+
+Check `print_sorted()` with sorted append
+-------------------------------------------
+
+    >>> a = MyList()
+    >>> a.append(1)
+    >>> a.append(2)
+    >>> a.append(3)
+    >>> a.print_sorted()
+    [1, 2, 3]
+
+Check `print_sorted()` with not sorted append
+-------------------------------------------------
+
+    >>> b = MyList()
+    >>> b.append(1)
+    >>> b.append(4)
+    >>> b.append(2)
+    >>> b.append(3)
+    >>> b.append(5)
+    >>> b.print_sorted()
     [1, 2, 3, 4, 5]
-    >>> print(my_list)
+    >>> b
     [1, 4, 2, 3, 5]
 
-An empty MyList prints sorted as an empty list:
+Check `print_sorted()` with not sorted append with negative number
+-----------------------------------------------------------------------
 
-    >>> MyList().print_sorted()
+    >>> c = MyList()
+    >>> c.append(3)
+    >>> c.append(-1)
+    >>> c.append(0)
+    >>> c.append(-5)
+    >>> c.print_sorted()
+    [-5, -1, 0, 3]
+    >>> c
+    [3, -1, 0, -5]
+
+Check `print_sorted()` with empty list
+------------------------------------------
+
+    >>> d = MyList()
+    >>> d.print_sorted()
     []
+
+Check `print_sorted()` returns a new list
+---------------------------------------------
+
+`print_sorted` prints but does not return a value, and it never
+mutates the original list:
+
+    >>> e = MyList()
+    >>> e.append(9)
+    >>> e.append(1)
+    >>> result = e.print_sorted()
+    [1, 9]
+    >>> print(result)
+    None
+    >>> e
+    [9, 1]
