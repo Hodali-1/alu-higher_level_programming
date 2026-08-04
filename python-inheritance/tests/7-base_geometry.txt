@@ -1,37 +1,114 @@
 The ``7-base_geometry`` module
 ================================
 
-Using ``integer_validator``
-----------------------------
-
-Import BaseGeometry:
+Check instantiation
+--------------------
 
     >>> BaseGeometry = __import__('7-base_geometry').BaseGeometry
     >>> bg = BaseGeometry()
 
-Valid integers pass silently:
+area()
+------
 
-    >>> bg.integer_validator("my_int", 12)
-    >>> bg.integer_validator("width", 89)
+``area`` is not implemented at this level:
 
-Non-integer values raise TypeError:
-
-    >>> bg.integer_validator("name", "John")
+    >>> bg.area()
     Traceback (most recent call last):
-    TypeError: name must be an integer
+    Exception: area() is not implemented
 
-Zero or negative values raise ValueError:
+integer_validator()
+--------------------
+
+Calling with no arguments at all:
+
+    >>> bg.integer_validator()
+    Traceback (most recent call last):
+    TypeError: integer_validator() missing 2 required positional arguments: 'name' and 'value'
+
+integer_validator("age")
+-------------------------
+
+Calling with only the name, missing value:
+
+    >>> bg.integer_validator("age")
+    Traceback (most recent call last):
+    TypeError: integer_validator() missing 1 required positional argument: 'value'
+
+integer_validator("age", 1)
+-----------------------------
+
+A valid positive integer passes silently:
+
+    >>> bg.integer_validator("age", 1)
+
+integer_validator("age", 0)
+-----------------------------
+
+Zero is not greater than 0:
 
     >>> bg.integer_validator("age", 0)
     Traceback (most recent call last):
     ValueError: age must be greater than 0
 
-    >>> bg.integer_validator("distance", -4)
-    Traceback (most recent call last):
-    ValueError: distance must be greater than 0
+integer_validator("age", -4)
+------------------------------
 
-``area`` is still not implemented at this level:
+Negative values are rejected:
 
-    >>> bg.area()
+    >>> bg.integer_validator("age", -4)
     Traceback (most recent call last):
-    Exception: area() is not implemented
+    ValueError: age must be greater than 0
+
+integer_validator("age", "4")
+-------------------------------
+
+A string is not an integer, even a numeric-looking one:
+
+    >>> bg.integer_validator("age", "4")
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+integer_validator("age", (4,))
+--------------------------------
+
+A tuple is not an integer:
+
+    >>> bg.integer_validator("age", (4,))
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+integer_validator("age", [3])
+-------------------------------
+
+A list is not an integer:
+
+    >>> bg.integer_validator("age", [3])
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+integer_validator("age", True)
+--------------------------------
+
+A bool's exact type is bool, not int, so it is rejected too:
+
+    >>> bg.integer_validator("age", True)
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+integer_validator("age", {3, 4})
+----------------------------------
+
+A set is not an integer:
+
+    >>> bg.integer_validator("age", {3, 4})
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+integer_validator("age", None)
+--------------------------------
+
+None is not an integer:
+
+    >>> bg.integer_validator("age", None)
+    Traceback (most recent call last):
+    TypeError: age must be an integer
