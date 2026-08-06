@@ -1,0 +1,33 @@
+=== EMAIL VERSION ===
+Subject: SQL - More queries: Task 0 grant checks failing on MySQL version drift
+
+Hi [tutor name],
+
+On SQL - More queries, Task 0 ("My privileges!") has two grant-output sub-checks
+failing that I don't believe are fixable from my code, and I wanted to flag it.
+
+My 0-privileges.sql only runs SHOW GRANTS - the checker's own setup scripts
+(main_2_0.sql, main_3_0.sql) create the users and run GRANT ALL PRIVILEGES before
+my script displays them. So the grant list in the output comes from the checker's
+MySQL server, not my SQL.
+
+The checker's [Got] and [Expected] are identical except [Got] includes six extra
+dynamic privileges: AUDIT_ABORT_EXEMPT, AUTHENTICATION_POLICY_ADMIN, FIREWALL_EXEMPT,
+GROUP_REPLICATION_STREAM, PASSWORDLESS_USER_ADMIN, SENSITIVE_VARIABLES_OBSERVER.
+These are bundled into GRANT ALL PRIVILEGES automatically by newer MySQL 8.0.x
+releases, so it looks like the expected output was recorded on an older MySQL
+version and needs regenerating. (Notably, the "user_0d_1 root user" sub-check
+already passes, which suggests the comparison is inconsistent across the current
+server version.)
+
+My latest commit is on branch master of alu-higher_level_programming.
+Happy to walk through it. Thanks!
+
+=== SHORT (SLACK/DISCORD) VERSION ===
+Heads-up on SQL - More queries Task 0: the SHOW GRANTS sub-checks fail because the
+checker's MySQL 8.0.x adds 6 dynamic privileges (AUDIT_ABORT_EXEMPT,
+AUTHENTICATION_POLICY_ADMIN, FIREWALL_EXEMPT, GROUP_REPLICATION_STREAM,
+PASSWORDLESS_USER_ADMIN, SENSITIVE_VARIABLES_OBSERVER) that the expected output
+doesn't have. My 0-privileges.sql just runs SHOW GRANTS - the checker creates/grants
+the users itself, so the diff is server-side. Looks like the expected output needs
+regenerating for the current MySQL version. Anyone else hit this / know the fix?
