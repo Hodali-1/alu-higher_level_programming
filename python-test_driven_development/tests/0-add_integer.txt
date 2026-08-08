@@ -28,6 +28,18 @@ Both a and b as floats:
     >>> add_integer(1.9, 2.9)
     3
 
+Adding positive infinity raises an overflow error:
+
+    >>> add_integer(float('inf'))
+    Traceback (most recent call last):
+    OverflowError: cannot convert float infinity to integer
+
+Adding NaN raises a value error:
+
+    >>> add_integer(float('nan'))
+    Traceback (most recent call last):
+    ValueError: cannot convert float NaN to integer
+
 a is not a number:
 
     >>> add_integer(None)
