@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Unit tests for the Square class."""
 import unittest
+import os
 from models.square import Square
 
 
@@ -52,21 +53,30 @@ class TestSquare(unittest.TestCase):
         s.update(**{"id": 7, "size": 4, "x": 5, "y": 6})
         self.assertEqual(str(s), "[Square] (7) 5/6 - 4")
 
-    def test_create_and_files(self):
-        """create(), save_to_file() and load_from_file() round-trip."""
-        import os
+    def test_create(self):
+        """create() builds a Square from a dictionary."""
         s = Square.create(**{"id": 89, "size": 1, "x": 2, "y": 3})
         self.assertEqual(str(s), "[Square] (89) 2/3 - 1")
-        Square.save_to_file(None)
+
+    def test_save_to_file(self):
+        """save_to_file() overwrites the file for objs, [] and None."""
+        Square.save_to_file([Square(1)])
         with open("Square.json") as f:
-            self.assertEqual(f.read(), "[]")
+            self.assertIn('"size": 1', f.read())
         Square.save_to_file([])
         with open("Square.json") as f:
             self.assertEqual(f.read(), "[]")
         Square.save_to_file([Square(1)])
+        Square.save_to_file(None)
         with open("Square.json") as f:
-            self.assertIn('"size": 1', f.read())
-        os.remove("Square.json")
+            self.assertEqual(f.read(), "[]")
+
+    def test_load_from_file(self):
+        """load_from_file() returns [] when missing, instances when present."""
+        try:
+            os.remove("Square.json")
+        except IOError:
+            pass
         self.assertEqual(Square.load_from_file(), [])
         Square.save_to_file([Square(2, 3, 4, 5)])
         self.assertEqual(str(Square.load_from_file()[0]),

@@ -2,6 +2,7 @@
 """Unit tests for the Rectangle class."""
 import unittest
 import io
+import os
 from contextlib import redirect_stdout
 from models.rectangle import Rectangle
 
@@ -65,22 +66,31 @@ class TestRectangle(unittest.TestCase):
         r.update(**{"id": 7, "width": 5, "height": 6, "x": 8, "y": 9})
         self.assertEqual(str(r), "[Rectangle] (7) 8/9 - 5/6")
 
-    def test_create_and_files(self):
-        """create(), save_to_file() and load_from_file() round-trip."""
-        import os
+    def test_create(self):
+        """create() builds a Rectangle from a dictionary."""
         r = Rectangle.create(**{"id": 89, "width": 1, "height": 2,
                                 "x": 3, "y": 4})
         self.assertEqual(str(r), "[Rectangle] (89) 3/4 - 1/2")
-        Rectangle.save_to_file(None)
+
+    def test_save_to_file(self):
+        """save_to_file() overwrites the file for objs, [] and None."""
+        Rectangle.save_to_file([Rectangle(1, 2)])
         with open("Rectangle.json") as f:
-            self.assertEqual(f.read(), "[]")
+            self.assertIn('"width": 1', f.read())
         Rectangle.save_to_file([])
         with open("Rectangle.json") as f:
             self.assertEqual(f.read(), "[]")
         Rectangle.save_to_file([Rectangle(1, 2)])
+        Rectangle.save_to_file(None)
         with open("Rectangle.json") as f:
-            self.assertIn('"width": 1', f.read())
-        os.remove("Rectangle.json")
+            self.assertEqual(f.read(), "[]")
+
+    def test_load_from_file(self):
+        """load_from_file() returns [] when missing, instances when present."""
+        try:
+            os.remove("Rectangle.json")
+        except IOError:
+            pass
         self.assertEqual(Rectangle.load_from_file(), [])
         Rectangle.save_to_file([Rectangle(1, 2, 3, 4, 5)])
         self.assertEqual(str(Rectangle.load_from_file()[0]),
