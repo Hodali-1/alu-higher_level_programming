@@ -1,0 +1,25 @@
+The ``5-text_indentation`` module
+====================================
+
+    >>> text_indentation = __import__('5-text_indentation').text_indentation
+
+A short sentence ending in each punctuation mark:
+
+    >>> text_indentation("Hi there. How are you? See you: bye")
+    Hi there.
+    <BLANKLINE>
+    How are you?
+    <BLANKLINE>
+    See you:
+    <BLANKLINE>
+    bye
+
+text is not a string:
+
+    >>> text_indentation(89)
+    Traceback (most recent call last):
+    TypeError: text must be a string
+
+An empty string prints nothing:
+
+    >>> text_indentation("")
